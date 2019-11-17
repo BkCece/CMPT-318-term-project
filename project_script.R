@@ -79,7 +79,7 @@ weekend_2007 = subset(mydata, subset=((day %in% c("Sat", "Sun")) & (year == 2007
 weekend_night_2007 = subset(weekend_2007, subset=(nighttime==TRUE))
 weekend_night_2007$hour = format(as.POSIXct(weekend_night_2007$Time, format = "%H:%M:%S"), "%H")
 
-testdata_weekend_2010 = subset(mydata, subset=((day %in% c("Sat", "Sun")) & (year == 2010)))
+testdata_weekend_2010 = subset(testdata, subset=((day %in% c("Sat", "Sun")) & (year == 2010)))
 testdata_weekend_night_2010 = subset(testdata_weekend_2010, subset=(nighttime==TRUE))
 testdata_weekend_night_2010$hour = format(as.POSIXct(testdata_weekend_night_2010$Time, format = "%H:%M:%S"), "%H")
 
@@ -87,7 +87,7 @@ weekend_2007 = subset(mydata, subset=((day %in% c("Sat", "Sun")) & (year == 2007
 weekend_day_2007 = subset(weekend_2007, subset=(daytime==TRUE))
 weekend_day_2007$hour = format(as.POSIXct(weekend_day_2007$Time, format = "%H:%M:%S"), "%H")
 
-testdata_weekend_2010 = subset(mydata, subset=((day %in% c("Sat", "Sun")) & (year == 2010)))
+testdata_weekend_2010 = subset(testdata, subset=((day %in% c("Sat", "Sun")) & (year == 2010)))
 testdata_weekend_day_2010 = subset(testdata_weekend_2010, subset=(daytime==TRUE))
 testdata_weekend_day_2010$hour = format(as.POSIXct(testdata_weekend_day_2010$Time, format = "%H:%M:%S"), "%H")
 
