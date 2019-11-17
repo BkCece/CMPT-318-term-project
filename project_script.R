@@ -13,6 +13,8 @@ testdata <- read.delim(
   header = TRUE, sep = ",", dec = "."
 )
 
+
+
 #Display data
 
 head(mydata)
@@ -41,28 +43,63 @@ testdata$day<-weekdays(as.Date(testdata$Date, format="%d/%m/%Y"), abbr = TRUE)
 testdata$year <- format(as.Date(testdata$Date, format = "%d/%m/%Y"), "%Y")
 
 
-
-
 startTime = as.POSIXct("07:00:00", format="%H:%M:%S")
 endTime = as.POSIXct("11:00:00", format="%H:%M:%S")
+nightstart = as.POSIXct("18:00:00", format="%H:%M:%S")
+nightend = as.POSIXct("23:00:00", format="%H:%M:%S")
 mydata$daytime <- mydata$T>startTime & mydata$T<endTime
+mydata$nighttime <- mydata$T>nightstart & mydata$T<nightend
 mydata$week <- week(as.Date(mydata$Date, format = "%d/%m/%Y"))
 
 
 testdata$daytime <- testdata$T>startTime & testdata$T<endTime
+testdata$nighttime <- testdata$T>nightstart & testdata$T<nightend
 testdata$week <- week(as.Date(testdata$Date, format = "%d/%m/%Y"))
 
-testdata_2007 = subset(testdata, subset=((day %in% c("Mon", "Tue", "Wed", "Thu", "Fri")) & (year == 2010)))
-testdata_dayTime_2007 = subset(testdata_2007, subset=(daytime==TRUE))
-testdata_dayTime_2007$hour = format(as.POSIXct(testdata_dayTime_2007$Time, format = "%H:%M:%S"), "%H")
+testdata_2010 = subset(testdata, subset=((day %in% c("Mon", "Tue", "Wed", "Thu", "Fri")) & (year == 2010)))
+testdata_dayTime_2010 = subset(testdata_2010, subset=(daytime==TRUE))
+testdata_dayTime_2010$hour = format(as.POSIXct(testdata_dayTime_2010$Time, format = "%H:%M:%S"), "%H")
 
 
 weekday_2007 = subset(mydata, subset=((day %in% c("Mon", "Tue", "Wed", "Thu", "Fri")) & (year == 2007)))
 weekday_dayTime_2007 = subset(weekday_2007, subset=(daytime==TRUE))
 weekday_dayTime_2007$hour = format(as.POSIXct(weekday_dayTime_2007$Time, format = "%H:%M:%S"), "%H")
 
-# write.table(weekday_dayTime_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/2007_data.txt", sep = ",")
-# write.table(testdata_dayTime_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/2010_test_data.txt", sep = ",")
+
+testdata_2010 = subset(testdata, subset=((day %in% c("Mon", "Tue", "Wed", "Thu", "Fri")) & (year == 2010)))
+testdata_night_2010 = subset(testdata_2010, subset=(nighttime==TRUE))
+testdata_night_2010$hour = format(as.POSIXct(testdata_night_2010$Time, format = "%H:%M:%S"), "%H")
+
+
+weekday_2007 = subset(mydata, subset=((day %in% c("Mon", "Tue", "Wed", "Thu", "Fri")) & (year == 2007)))
+weekday_night_2007 = subset(weekday_2007, subset=(nighttime==TRUE))
+weekday_night_2007$hour = format(as.POSIXct(weekday_night_2007$Time, format = "%H:%M:%S"), "%H")
+
+weekend_2007 = subset(mydata, subset=((day %in% c("Sat", "Sun")) & (year == 2007)))
+weekend_night_2007 = subset(weekend_2007, subset=(nighttime==TRUE))
+weekend_night_2007$hour = format(as.POSIXct(weekend_night_2007$Time, format = "%H:%M:%S"), "%H")
+
+testdata_weekend_2010 = subset(mydata, subset=((day %in% c("Sat", "Sun")) & (year == 2010)))
+testdata_weekend_night_2010 = subset(testdata_weekend_2010, subset=(nighttime==TRUE))
+testdata_weekend_night_2010$hour = format(as.POSIXct(testdata_weekend_night_2010$Time, format = "%H:%M:%S"), "%H")
+
+weekend_2007 = subset(mydata, subset=((day %in% c("Sat", "Sun")) & (year == 2007)))
+weekend_day_2007 = subset(weekend_2007, subset=(daytime==TRUE))
+weekend_day_2007$hour = format(as.POSIXct(weekend_day_2007$Time, format = "%H:%M:%S"), "%H")
+
+testdata_weekend_2010 = subset(mydata, subset=((day %in% c("Sat", "Sun")) & (year == 2010)))
+testdata_weekend_day_2010 = subset(testdata_weekend_2010, subset=(daytime==TRUE))
+testdata_weekend_day_2010$hour = format(as.POSIXct(testdata_weekend_day_2010$Time, format = "%H:%M:%S"), "%H")
+
+write.table(weekday_dayTime_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekday_dayTime_2007.txt", sep = ",")
+write.table(testdata_dayTime_2010, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/testdata_dayTime_2010.txt", sep = ",")
+write.table(weekday_night_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekday_night_2007.txt", sep = ",")
+write.table(testdata_night_2010, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/testdata_night_2010.txt", sep = ",")
+
+write.table(weekend_night_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekend_night_2007.txt", sep = ",")
+write.table(testdata_weekend_night_2010, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/testdata_weekend_night_2010.txt", sep = ",")
+write.table(weekend_day_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekend_day_2007.txt", sep = ",")
+write.table(testdata_weekend_day_2010, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/testdata_weekend_day_2010.txt", sep = ",")
 
 
 #mean_aggdata <- aggregate(weekday_dayTime_2007, by = list(weekday_dayTime_2007$date, weekday_dayTime_2007$Voltage), FUN = mean, na.rm = TRUE)
