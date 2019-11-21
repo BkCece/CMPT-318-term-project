@@ -13,8 +13,13 @@ testdata <- read.delim(
   header = TRUE, sep = ",", dec = "."
 )
 
+mydata[mydata<0] <- NA
+#mydata <- mydata[mydata$Global_active_power >= 0, mydata$Global_reactive_power >= 0, mydata$Voltage >= 0]
+#testdata <- testdata[testdata$Global_active_power >= 0, testdata$Global_reactive_power >= 0, testdata$Voltage >= 0]
+testdata[testdata<0] <-NA
 
-
+mydata = na.omit(mydata)
+testdata = na.omit(testdata)
 #Display data
 
 head(mydata)
@@ -24,7 +29,7 @@ set.seed(1)
 # get sunday morning
 model_feature = c("TrueTime", "Global_active_power", "Global_reactive_power", "Voltage",
                   "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")
-mydata = na.omit(mydata)
+
 mydata$TrueTime = paste(mydata$Date, mydata$Time)
 mydata$TrueTime = as.POSIXct(mydata$TrueTime, format="%d/%m/%Y %H:%M:%S")
 mydata$T = as.POSIXct(mydata$Time, format="%H:%M:%S")
@@ -35,7 +40,7 @@ mydata$year <- format(as.Date(mydata$Date, format = "%d/%m/%Y"), "%Y")
 testdata_feature = c("TrueTime", "Global_active_power", "Global_reactive_power", "Voltage",
                      "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")
 
-testdata = na.omit(testdata)
+
 testdata$TrueTime = paste(testdata$Date, testdata$Time)
 testdata$TrueTime = as.POSIXct(testdata$TrueTime, format="%d/%m/%Y %H:%M:%S")
 testdata$T = as.POSIXct(testdata$Time, format="%H:%M:%S")
@@ -91,15 +96,15 @@ testdata_weekend_2010 = subset(testdata, subset=((day %in% c("Sat", "Sun")) & (y
 testdata_weekend_day_2010 = subset(testdata_weekend_2010, subset=(daytime==TRUE))
 testdata_weekend_day_2010$hour = format(as.POSIXct(testdata_weekend_day_2010$Time, format = "%H:%M:%S"), "%H")
 
-write.table(weekday_dayTime_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekday_dayTime_2007.txt", sep = ",")
-write.table(testdata_dayTime_2010, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/testdata_dayTime_2010.txt", sep = ",")
-write.table(weekday_night_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekday_night_2007.txt", sep = ",")
-write.table(testdata_night_2010, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/testdata_night_2010.txt", sep = ",")
+write.table(weekday_dayTime_2007, "/Users/shaynagrose/Desktop/FALL19/CMPT318/CMPT-318-term-project/weekday_dayTime_2007.txt", sep = ",")
+write.table(testdata_dayTime_2010, "/Users/shaynagrose/Desktop/FALL19/CMPT318/CMPT-318-term-project/testdata_dayTime_2010.txt", sep = ",")
+write.table(weekday_night_2007, "/Users/shaynagrose/Desktop/FALL19/CMPT318/CMPT-318-term-project/weekday_night_2007.txt", sep = ",")
+write.table(testdata_night_2010, "/Users/shaynagrose/Desktop/FALL19/CMPT318/CMPT-318-term-project/testdata_night_2010.txt", sep = ",")
 
-write.table(weekend_night_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekend_night_2007.txt", sep = ",")
-write.table(testdata_weekend_night_2010, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/testdata_weekend_night_2010.txt", sep = ",")
-write.table(weekend_day_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekend_day_2007.txt", sep = ",")
-write.table(testdata_weekend_day_2010, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/testdata_weekend_day_2010.txt", sep = ",")
+write.table(weekend_night_2007, "/Users/shaynagrose/Desktop/FALL19/CMPT318/CMPT-318-term-project/weekend_night_2007.txt", sep = ",")
+write.table(testdata_weekend_night_2010, "/Users/shaynagrose/Desktop/FALL19/CMPT318/CMPT-318-term-project/testdata_weekend_night_2010.txt", sep = ",")
+write.table(weekend_day_2007, "/Users/shaynagrose/Desktop/FALL19/CMPT318/CMPT-318-term-project/weekend_day_2007.txt", sep = ",")
+write.table(testdata_weekend_day_2010, "/Users/shaynagrose/Desktop/FALL19/CMPT318/CMPT-318-term-project/testdata_weekend_day_2010.txt", sep = ",")
 
 
 #mean_aggdata <- aggregate(weekday_dayTime_2007, by = list(weekday_dayTime_2007$date, weekday_dayTime_2007$Voltage), FUN = mean, na.rm = TRUE)
