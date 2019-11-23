@@ -24,7 +24,39 @@ testdata = na.omit(testdata)
 
 head(mydata)
 
-set.seed(1)
+
+cor_active_reactive <- cor(mydata$Global_active_power, mydata$Global_reactive_power)
+cor_active_Voltage <- cor(mydata$Global_active_power, mydata$Voltage)
+cor_active_intensitiy <- cor(mydata$Global_active_power, mydata$Global_intensity)
+cor_intensity_Voltage <- cor(mydata$Voltage, mydata$Global_intensity)
+
+cor_active_reactive_testdata <- cor(testdata$Global_active_power, testdata$Global_reactive_power)
+cor_active_Voltag_testdatae <- cor(testdata$Global_active_power, testdata$Voltage)
+cor_active_intensitiy_testdata <- cor(testdata$Global_active_power, testdata$Global_intensity)
+cor_intensity_Voltage_testdata <- cor(testdata$Voltage, testdata$Global_intensity)
+
+max_active <- max(mydata$Global_active_power)
+max_reactive <- max(mydata$Global_reactive_power)
+max_Voltage <- max(mydata$Voltage)
+max_intensity <- max(mydata$Global_intensity)
+
+min_active <- min(mydata$Global_active_power)
+min_reactive <- min(mydata$Global_reactive_power)
+min_Voltage <- min(mydata$Voltage)
+min_intensity <- min(mydata$Global_intensity)
+
+
+max_active_testdata <- max(testdata$Global_active_power)
+max_reactive_testdata <- max(testdata$Global_reactive_power)
+max_Voltage_testdata <- max(testdata$Voltage)
+max_intensity_testdata <- max(testdata$Global_intensity)
+
+min_active_testdata <- min(testdata$Global_active_power)
+min_reactive_testdata <- min(testdata$Global_reactive_power)
+min_Voltage_testdata <- min(testdata$Voltage)
+min_intensity_testdata <- min(testdata$Global_intensity)
+
+
 
 # get sunday morning
 model_feature = c("TrueTime", "Global_active_power", "Global_reactive_power", "Voltage",
