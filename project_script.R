@@ -194,7 +194,7 @@ write.table(testdata_weekend_day_2010, here("testdata_weekend_day_2009.txt"), se
 anonfeature = mydata[c("Date", "Time","TrueTime", "Voltage","Global_active_power")]
 start = as.POSIXct("00:00:00", format="%H:%M:%S")
 end = as.POSIXct("01:00:00", format="%H:%M:%S")
-plot(mydata$Time,main="test")
+count = 0
 for(i in 0:23){
   # Slice the data in 1 hour time window
   dataSlice = subset(mydata, mydata$T>start & mydata$T<end)
@@ -206,12 +206,16 @@ for(i in 0:23){
     maxVol = max(dataSlice$Voltage)
     #minAct = min(dataSlice$Global_active_power)
     #maxAct = max(dataSlice$Global_active_power)
-    outOfRangeV = subset(testdata, testSlice$Voltage<minVol | testSlice$Voltage>maxVol)
+    outOfRangeV = subset(testdata, subset = (testSlice$Voltage<minVol | testSlice$Voltage>maxVol))
     
     #If there is out of range point plot it
     if(length(outOfRangeV$Voltage) > 0){
       len = length(outOfRangeV$Vol)
-      plot(outOfRangeV$Time,outOfRangeV$Vol)
+      if(count == 0){
+        plot(outOfRangeV$Time,outOfRangeV$Vol,main = "test",type = "p")
+        count = count + 1
+      }
+      plot(outOfRangeV$Time,outOfRangeV$Vol,type = "p")
     }
   }
   # Move the time window
