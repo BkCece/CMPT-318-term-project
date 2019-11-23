@@ -36,6 +36,7 @@ mydata$TrueTime = as.POSIXct(mydata$TrueTime, format="%d/%m/%Y %H:%M:%S")
 mydata$T = as.POSIXct(mydata$Time, format="%H:%M:%S")
 mydata$day<-weekdays(as.Date(mydata$Date, format="%d/%m/%Y"), abbr = TRUE)
 mydata$year <- format(as.Date(mydata$Date, format = "%d/%m/%Y"), "%Y")
+mydata$hour = format(as.POSIXct(mydata$Time, format = "%H:%M:%S"), "%H")
 
 
 testdata_feature = c("TrueTime", "Global_active_power", "Global_reactive_power", "Voltage",
@@ -47,7 +48,7 @@ testdata$TrueTime = as.POSIXct(testdata$TrueTime, format="%d/%m/%Y %H:%M:%S")
 testdata$T = as.POSIXct(testdata$Time, format="%H:%M:%S")
 testdata$day<-weekdays(as.Date(testdata$Date, format="%d/%m/%Y"), abbr = TRUE)
 testdata$year <- format(as.Date(testdata$Date, format = "%d/%m/%Y"), "%Y")
-
+testdata$hour = format(as.POSIXct(testdata$Time, format = "%H:%M:%S"), "%H")
 
 startTime = as.POSIXct("07:00:00", format="%H:%M:%S")
 endTime = as.POSIXct("11:00:00", format="%H:%M:%S")
@@ -156,20 +157,37 @@ write.table(testdata_weekend_day_2010, here("testdata_weekend_day_2009.txt"), se
 
 #Approach 1: Finding Point Anomalies. 
 #Part I: Out of range: Choosing "Global active power" and "Voltage" to make comparision
-anonfeature = mydata[c("Date", "Time","TrueTime","daytime","nighttime", "Voltage","Global_active_power")]
-anondaytime = subset(anonfeature, (daytime == TRUE))
-anonnighttime = subset(anonfeature, nighttime == TRUE)
+# Find min and max Voltage per 1 hour window and compare to Voltage of testdata
 
-
-minVol = min(anondaytime$Voltage)
-maxVol = max(anondaytime$Voltage)
-minAct = min(anondaytime$Global_active_power)
-maxAct = max(anondaytime$Global_active_power)
-
-anonTest = subset(testdata,(daytime == TRUE))
-len = length(which(anonTest$Vol<minVol | anonTest$Vol>maxVol))
-anonTest = subset(anonTest, anonTest$Vol<minVol | anonTest$Vol>maxVol)
-
+anonfeature = mydata[c("Date", "Time","TrueTime", "Voltage","Global_active_power")]
+start = as.POSIXct("00:00:00", format="%H:%M:%S")
+end = as.POSIXct("01:00:00", format="%H:%M:%S")
+plot(mydata$Time,main="test")
+for(i in 0:23){
+  # Slice the data in 1 hour time window
+  dataSlice = subset(mydata, mydata$T>start & mydata$T<end)
+  testSlice = subset(testdata, testdata$T>start & testdata$T<end)
+  
+  #Check for out of range in the time window
+  if(length(testSlice$Voltage) > 0){
+    minVol = min(dataSlice$Voltage)
+    maxVol = max(dataSlice$Voltage)
+    #minAct = min(dataSlice$Global_active_power)
+    #maxAct = max(dataSlice$Global_active_power)
+    outOfRangeV = subset(testdata, testSlice$Voltage<minVol | testSlice$Voltage>maxVol)
+    
+    #If there is out of range point plot it
+    if(length(outOfRangeV$Voltage) > 0){
+      len = length(outOfRangeV$Vol)
+      plot(outOfRangeV$Time,outOfRangeV$Vol)
+    }
+  }
+  # Move the time window
+  start = start + hours(1)
+  end = end + hours(1)
+}
+#Plot
+attach(mtcars)
 plot(anonTest$Time,anonTest$Voltage)
 #mean_aggdata <- aggregate(weekday_dayTime_2007, by = list(weekday_dayTime_2007$date, weekday_dayTime_2007$Voltage), FUN = mean, na.rm = TRUE)
 
