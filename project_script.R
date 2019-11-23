@@ -156,15 +156,21 @@ write.table(testdata_weekend_day_2010, here("testdata_weekend_day_2009.txt"), se
 
 #Approach 1: Finding Point Anomalies. 
 #Part I: Out of range: Choosing "Global active power" and "Voltage" to make comparision
-anonfeature = mydata[c("Date", "Time", "Voltage", "TrueTime","Global_active_power")]
+anonfeature = mydata[c("Date", "Time","TrueTime","daytime","nighttime", "Voltage","Global_active_power")]
+anondaytime = subset(anonfeature, (daytime == TRUE))
+anonnighttime = subset(anonfeature, nighttime == TRUE)
 
-anondaytime = subset(features, daytime == TRUE)
-minVol = min(features$Voltage)
-maxVol = max(features$Voltage)
-minAct = min(features$Global_active_power)
-maxAct = max(features$Global_active_power)
 
-feaTest = testdata[c("Date", "Time", "Voltage", "TrueTime","Global_active_power")]
+minVol = min(anondaytime$Voltage)
+maxVol = max(anondaytime$Voltage)
+minAct = min(anondaytime$Global_active_power)
+maxAct = max(anondaytime$Global_active_power)
+
+anonTest = subset(testdata,(daytime == TRUE))
+len = length(which(anonTest$Vol<minVol | anonTest$Vol>maxVol))
+anonTest = subset(anonTest, anonTest$Vol<minVol | anonTest$Vol>maxVol)
+
+plot(anonTest$Time,anonTest$Voltage)
 #mean_aggdata <- aggregate(weekday_dayTime_2007, by = list(weekday_dayTime_2007$date, weekday_dayTime_2007$Voltage), FUN = mean, na.rm = TRUE)
 
 # Power_perHour <- c()
