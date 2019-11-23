@@ -87,7 +87,7 @@ write.table(weekday_test_night, "D:/My Documents/Fall 2019/318/Project/CMPT-318-
 weekend = subset(mydata, subset=((day %in% c("Sat", "Sun"))))
 weekend_day = subset(weekend, subset=(daytime==TRUE))
 weekend_day$hour = format(as.POSIXct(weekend_day$Time, format = "%H:%M:%S"), "%H")
-write.table(weekend, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekend.txt", sep = ",")
+write.table(weekend_day, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekend_day.txt", sep = ",")
 
 
 weekend_test = subset(testdata, subset=((day %in% c("Sat", "Sun"))))
