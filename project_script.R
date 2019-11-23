@@ -2,6 +2,7 @@
 library("lubridate")
 library("depmixS4")
 library(ggplot2)
+library(here)
 
 mydata <- read.delim(
   "TrainData.txt",
@@ -65,44 +66,44 @@ testdata$week <- week(as.Date(testdata$Date, format = "%d/%m/%Y"))
 weekday = subset(mydata, subset=((day %in% c("Mon", "Tue", "Wed", "Thu", "Fri"))))
 weekday_day = subset(weekday, subset=(daytime==TRUE))
 weekday_day$hour = format(as.POSIXct(weekday_day$Time, format = "%H:%M:%S"), "%H")
-write.table(weekday_day, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekday_day.txt", sep = ",")
+write.table(weekday_day, here("weekday_day.txt"), sep = ",")
 
 
 weekday_test = subset(testdata, subset=((day %in% c("Mon", "Tue", "Wed", "Thu", "Fri"))))
 weekday_test_day = subset(weekday_test, subset=(daytime==TRUE))
 weekday_test_day$hour = format(as.POSIXct(weekday_test_day$Time, format = "%H:%M:%S"), "%H")
-write.table(weekday_test_day, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekday_test_day.txt", sep = ",")
+write.table(weekday_test_day, here("weekday_test_day.txt"), sep = ",")
 
 
 weekday_night = subset(weekday, subset=(nighttime==TRUE))
 weekday_night$hour = format(as.POSIXct(weekday_night$Time, format = "%H:%M:%S"), "%H")
-write.table(weekday_night, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekday_night.txt", sep = ",")
+write.table(weekday_night, here("weekday_night.txt"), sep = ",")
 
 
 weekday_test_night = subset(weekday_test, subset=(nighttime==TRUE))
 weekday_test_night$hour = format(as.POSIXct(weekday_test_night$Time, format = "%H:%M:%S"), "%H")
-write.table(weekday_test_night, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekday_test_night.txt", sep = ",")
+write.table(weekday_test_night, here("weekday_test_night.txt"), sep = ",")
 
 
 weekend = subset(mydata, subset=((day %in% c("Sat", "Sun"))))
 weekend_day = subset(weekend, subset=(daytime==TRUE))
 weekend_day$hour = format(as.POSIXct(weekend_day$Time, format = "%H:%M:%S"), "%H")
-write.table(weekend_day, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekend_day.txt", sep = ",")
+write.table(weekend_day, here("weekend_day.txt"), sep = ",")
 
 
 weekend_test = subset(testdata, subset=((day %in% c("Sat", "Sun"))))
 weekend_test_day = subset(weekend_test, subset=(daytime==TRUE))
 weekend_test_day$hour = format(as.POSIXct(weekend_test_day$Time, format = "%H:%M:%S"), "%H")
-write.table(weekend_test, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekend_test.txt", sep = ",")
+write.table(weekend_test, here("weekend_test.txt"), sep = ",")
 
 
 weekend_night = subset(weekend, subset=(nighttime==TRUE))
 weekend_night$hour = format(as.POSIXct(weekend_night$Time, format = "%H:%M:%S"), "%H")
-write.table(weekend_night, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekend_night.txt", sep = ",")
+write.table(weekend_night, here("weekend_night.txt"), sep = ",")
 
 weekend_test_night = subset(weekend_test, subset=(nighttime==TRUE))
 weekend_test_night$hour = format(as.POSIXct(weekend_test_night$Time, format = "%H:%M:%S"), "%H")
-write.table(weekend_test_night, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekend_test_night.txt", sep = ",")
+write.table(weekend_test_night, here("weekend_test_night.txt"), sep = ",")
 
 
 testdata_2010 = subset(testdata, subset=((day %in% c("Mon", "Tue", "Wed", "Thu", "Fri")) & (year == 2009)))
@@ -140,17 +141,30 @@ testdata_weekend_2010 = subset(testdata, subset=((day %in% c("Sat", "Sun")) & (y
 testdata_weekend_day_2010 = subset(testdata_weekend_2010, subset=(daytime==TRUE))
 testdata_weekend_day_2010$hour = format(as.POSIXct(testdata_weekend_day_2010$Time, format = "%H:%M:%S"), "%H")
 
-write.table(weekday_dayTime_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekday_dayTime_2008.txt", sep = ",")
-write.table(testdata_dayTime_2010, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/testdata_dayTime_2009.txt", sep = ",")
-write.table(weekday_night_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekday_night_2008.txt", sep = ",")
-write.table(testdata_night_2010, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/testdata_night_2009.txt", sep = ",")
+write.table(weekday_dayTime_2007, here("weekday_dayTime_2008.txt"), sep = ",")
+write.table(testdata_dayTime_2010, here("testdata_dayTime_2009.txt"), sep = ",")
+write.table(weekday_night_2007, here("weekday_night_2008.txt"), sep = ",")
+write.table(testdata_night_2010, here("testdata_night_2009.txt"), sep = ",")
 
-write.table(weekend_night_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekend_night_2008.txt", sep = ",")
-write.table(testdata_weekend_night_2010, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/testdata_weekend_night_2009.txt", sep = ",")
-write.table(weekend_day_2007, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/weekend_day_2008.txt", sep = ",")
-write.table(testdata_weekend_day_2010, "D:/My Documents/Fall 2019/318/Project/CMPT-318-term-project/testdata_weekend_day_2009.txt", sep = ",")
+write.table(weekend_night_2007, here("weekend_night_2008.txt"), sep = ",")
+write.table(testdata_weekend_night_2010, here("testdata_weekend_night_2009.txt"), sep = ",")
+write.table(weekend_day_2007, here("weekend_day_2008.txt"), sep = ",")
+write.table(testdata_weekend_day_2010, here("testdata_weekend_day_2009.txt"), sep = ",")
 
 
+#Phase 2: Anomaly Detection Approach
+
+#Approach 1: Finding Point Anomalies. 
+#Part I: Out of range: Choosing "Global active power" and "Voltage" to make comparision
+anonfeature = mydata[c("Date", "Time", "Voltage", "TrueTime","Global_active_power")]
+
+anondaytime = subset(features, daytime == TRUE)
+minVol = min(features$Voltage)
+maxVol = max(features$Voltage)
+minAct = min(features$Global_active_power)
+maxAct = max(features$Global_active_power)
+
+feaTest = testdata[c("Date", "Time", "Voltage", "TrueTime","Global_active_power")]
 #mean_aggdata <- aggregate(weekday_dayTime_2007, by = list(weekday_dayTime_2007$date, weekday_dayTime_2007$Voltage), FUN = mean, na.rm = TRUE)
 
 # Power_perHour <- c()
