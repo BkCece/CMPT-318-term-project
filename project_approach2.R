@@ -54,7 +54,7 @@ wen_num = length(unique(weekend_night$Time))
 
 #Test for best number of states
 # Loop through 8-18 states
-# find the optimal nstates for weekday daytime HMM
+# find the optimal nstates for all 4 HMMs
 for(n in range){
   
   #WEEKDAY DAYS - model 1
@@ -71,7 +71,7 @@ for(n in range){
   fmV1 <- fit(modelV1)
   fmV1
   bicV1[n] = BIC(fmV1)
-  message(bicV1[n])
+  message("BIC 1: ", bicV1[n])
   
   message("\n")
   
@@ -90,7 +90,7 @@ for(n in range){
   fmV2 <- fit(modelV2)
   fmV2
   bicV2[n] = BIC(fmV2)
-  message(bicV2[n])
+  message("BIC 2: ", bicV2[n])
   
   message("\n")
   
@@ -109,7 +109,7 @@ for(n in range){
   fmV3 <- fit(modelV3)
   fmV3
   bicV3[n] = BIC(fmV3)
-  message(bicV3[n])
+  message("BIC 3: ", bicV3[n])
   
   message("\n")
   
@@ -128,14 +128,15 @@ for(n in range){
   fmV4 <- fit(modelV4)
   fmV4
   bicV4[n] = BIC(fmV4)
-  message(bicV4[n])
+  message("BIC 4: ", bicV4[n])
   
   message("\n")
 }
 
-# plot(range,bicV1,xlab = "Number of states (n)",frame = FALSE,pch = "o",col = "red",main = "BIC of 4 different HMMs with n states",ylab= "BIC", ty="b",lty=1)
-# lines(range,bicV2,col ="blue",ty = "b",pch = "*",lty=2)
-# lines(range,bicV3,col ="black",ty = "b",pch = ".",lty=3)
-# lines(range,bicV4,col ="green",ty = "b",pch = ".",lty=4)
-# legend(x = "topright",legend=c("Model 1","Model 2","Model 3","Model 4"),col = c("red","blue","black","green"),pch=c("o","*",".","x"),lty=c(1,2,3,4))
+#Display results
+plot(range,bicV1,xlab = "Number of states (n)",frame = FALSE,pch = "o",col = "red",main = "BIC of 4 different HMMs with n states",ylab= "BIC", ty="b",lty=1)
+lines(range,bicV2,col ="blue",ty = "b",pch = "*",lty=2)
+lines(range,bicV3,col ="black",ty = "b",pch = ".",lty=3)
+lines(range,bicV4,col ="green",ty = "b",pch = ".",lty=4)
+legend(x = "topright",legend=c("Model 1","Model 2","Model 3","Model 4"),col = c("red","blue","black","green"),pch=c("o","*",".","x"),lty=c(1,2,3,4))
 
