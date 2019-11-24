@@ -134,7 +134,8 @@ for(n in range){
 }
 
 #Plot BICs
-bicV1_vals = c(86660.02, 98155.71, 90608.48, 77121.03, 85606.72, 69214.80, 68038.11, 60407.24, 54690.60, 44045.12, 25419.19)
+#Hardcoded after fitting to prevent loss of data
+bicV1_vals = c(86660.02, 98155.71, 90608.48, 77121.03, 85606.72, 69214.80, 68038.11, 60407.24, 54690.60, 44045.12, 25419.19, 39272.66)
 array_bicV1 = bicV1_vals/1000
 plot(range,array_bicV1,ylim = c(min(array_bicV1), max(array_bicV1)), col = "purple",ty="b",main = "Weekday Day BICs", ylab = "BIC (thousands)", xlab = "Number of States (n)")
 
@@ -151,9 +152,71 @@ array_bicV4 = bicV4_vals/1000
 plot(range,array_bicV4,ylim = c(min(array_bicV4), max(array_bicV4)), col = "green",ty="b",main = "Weekend Night BICs", ylab = "BIC (thousands)", xlab = "Number of States (n)")
 
 #Display results
-plot(range,array_bicV1,ylim = c(min(array_bicV1, array_bicV2, array_bicV3, array_bicV4)/2, max(array_bicV1, array_bicV2, array_bicV3, array_bicV4)), xlab = "Number of states (n)",frame = FALSE,pch = "o",col = "purple",main = "BIC of 4 different HMMs with n states",ylab= "BIC", ty="b",lty=1)
+plot(range,array_bicV1,ylim = c(min(array_bicV1, array_bicV2, array_bicV3, array_bicV4)/2, max(array_bicV1, array_bicV2, array_bicV3, array_bicV4)), xlab = "Number of states (n)",frame = FALSE,pch = "o",col = "purple",main = "BIC of 4 different HMMs with n states",ylab= "BIC (thousands)", ty="b",lty=1)
 lines(range,array_bicV2,col ="blue",ty = "b",pch = "*",lty=2)
 lines(range,array_bicV3,col ="red",ty = "b",pch = ".",lty=3)
 lines(range,array_bicV4,col ="green",ty = "b",pch = "x",lty=4)
 legend(x = "topright",legend=c("Model 1","Model 2","Model 3","Model 4"),col = c("purple","blue","red","green"),pch=c("o","*",".","x"),lty=c(1,2,3,4))
+
+#Choosing the models based on max log likelihood and min BIC
+#n states for models 1, 2, 3 is 18 but for model 4 is 16
+
+#WEEKDAY DAYS - model 1
+set.seed(1)
+modelV1 <- depmix(
+  response = wdd_train$Global_active_power ~ 1,
+  family = gaussian("identity"),
+  data = wdd_train,
+  nstates = 18,
+  #ntimes = c(rep(wdd_num, 52))
+)
+fmV1 <- fit(modelV1)
+fmV1
+
+message("\n")
+
+#WEEKDAY NIGHTS - model 2
+set.seed(1)
+
+modelV2 <- depmix(
+  response = wdn_train$Global_active_power ~ 1,
+  family = gaussian("identity"),
+  data = wdn_train,
+  nstates = 18,
+  #ntimes = c(rep(wdn_num, 52))
+)
+fmV2 <- fit(modelV2)
+fmV2
+
+message("\n")
+
+#WEEKEND DAYS - model 3
+set.seed(1)
+
+modelV3 <- depmix(
+  response = wed_train$Global_active_power ~ 1,
+  family = gaussian("identity"),
+  data = wed_train,
+  nstates = 18,
+  #ntimes = c(rep(wed_num, 52))
+)
+fmV3 <- fit(modelV3)
+fmV3
+
+message("\n")
+
+#WEEKEND NIGHTS - model 4
+set.seed(1)
+
+modelV4 <- depmix(
+  response = wen_train$Global_active_power ~ 1,
+  family = gaussian("identity"),
+  data = wen_train,
+  nstates = 16,
+  #ntimes = c(rep(wen_num, 52))
+)
+fmV4 <- fit(modelV4)
+fmV4
+
+message("\n")
 
