@@ -77,6 +77,7 @@ plt.legend((t2006, t2007, t2008),
            ('2006', '2007', '2008'),
            loc='upper right',
            fontsize=8)
+
 plt.title('Original data')
 plt.xlabel('week')
 plt.ylabel('Mean Voltage')

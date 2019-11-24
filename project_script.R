@@ -25,7 +25,8 @@ testdata = na.omit(testdata)
 
 head(mydata)
 
-
+cor_reactive_Voltage <- cor(mydata$Global_reactive_power, mydata$Voltage)
+cor_reactive_Voltage_test <- cor(testdata$Global_reactive_power, testdata$Voltage)
 cor_active_reactive <- cor(mydata$Global_active_power, mydata$Global_reactive_power)
 cor_active_Voltage <- cor(mydata$Global_active_power, mydata$Voltage)
 cor_active_intensitiy <- cor(mydata$Global_active_power, mydata$Global_intensity)
@@ -57,6 +58,21 @@ min_reactive_testdata <- min(testdata$Global_reactive_power)
 min_Voltage_testdata <- min(testdata$Voltage)
 min_intensity_testdata <- min(testdata$Global_intensity)
 
+sd_active <- sd(mydata$Global_active_power)
+sd_reactive <- sd(mydata$Global_reactive_power)
+sd_Voltage <- sd(mydata$Voltage)
+
+sd_active_testdata <- sd(testdata$Global_active_power)
+sd_reactive_testdata <- sd(testdata$Global_reactive_power)
+sd_Voltage_testdata <- sd(testdata$Voltage)
+
+mean_active <- mean(mydata$Global_active_power)
+mean_reactive <- mean(mydata$Global_reactive_power)
+mean_Voltage <- mean(mydata$Voltage)
+
+mean_active_testdata <- mean(testdata$Global_active_power)
+mean_reactive_testdata <- mean(testdata$Global_reactive_power)
+mean_Voltage_testdata <- mean(testdata$Voltage)
 
 
 # get sunday morning
