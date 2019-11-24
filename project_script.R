@@ -197,8 +197,8 @@ end = as.POSIXct("01:00:00", format="%H:%M:%S")
 count = 0
 for(i in 0:23){
   # Slice the data in 1 hour time window
-  dataSlice = subset(mydata, mydata$T>start & mydata$T<end)
-  testSlice = subset(testdata, testdata$T>start & testdata$T<end)
+  dataSlice = mydata[ mydata$T > start & mydata$T < end,]
+  testSlice = testdata[testdata$T > start & testdata$T < end,]
   
   #Check for out of range in the time window
   if(length(testSlice$Voltage) > 0){
@@ -206,16 +206,28 @@ for(i in 0:23){
     maxVol = max(dataSlice$Voltage)
     #minAct = min(dataSlice$Global_active_power)
     #maxAct = max(dataSlice$Global_active_power)
-    outOfRangeV = subset(testdata, subset = (testSlice$Voltage<minVol | testSlice$Voltage>maxVol))
-    
+    outOfRangeV = testSlice[testSlice$Voltage<minVol | testSlice$Voltage>maxVol,]
+    len = length(outOfRangeV$Vol)
+    minV = 1:len
+    maxV = 1:len
+    minV[1:len] = minVol
+    maxV[1:len] = maxVol
     #If there is out of range point plot it
-    if(length(outOfRangeV$Voltage) > 0){
-      len = length(outOfRangeV$Vol)
+    if(len > 0){
+      
       if(count == 0){
-        plot(outOfRangeV$Time,outOfRangeV$Vol,main = "test",type = "p")
+        plot(outOfRangeV$Time,outOfRangeV$Vol,main = "Out of Range Voltage with 1 hour time slide",type = "p", ylim=range(220,260))
+        lines(outOfRangeV$Time,minV, col ="blue",ty = "b",pch = "*")
+        lines(outOfRangeV$Time,maxV, col ="red",ty = "b",pch = "*")
         count = count + 1
       }
-      plot(outOfRangeV$Time,outOfRangeV$Vol,type = "p")
+      else{
+        lines(outOfRangeV$Time,outOfRangeV$Vol,type = "p")
+        lines(outOfRangeV$Time,minV, col ="blue",ty = "b",pch = "*")
+        lines(outOfRangeV$Time,maxV, col ="red",ty = "b",pch = "*")
+
+      }
+      legend(x = "topright",legend=c("Min","Max","Anomaly"),col = c("blue","red","black"),pch = c(8,8,8))
     }
   }
   # Move the time window
