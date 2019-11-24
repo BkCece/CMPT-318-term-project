@@ -133,10 +133,27 @@ for(n in range){
   message("\n")
 }
 
+#Plot BICs
+bicV1_vals = c(86660.02, 98155.71, 90608.48, 77121.03, 85606.72, 69214.80, 68038.11, 60407.24, 54690.60, 44045.12, 25419.19)
+array_bicV1 = bicV1_vals/1000
+plot(range,array_bicV1,ylim = c(min(array_bicV1), max(array_bicV1)), col = "purple",ty="b",main = "Weekday Day BICs", ylab = "BIC (thousands)", xlab = "Number of States (n)")
+
+bicV2_vals = c(220861.4, 207130.6, 200893.7, 191646.2, 187546.7, 176411.0, 167275.8, 160573.3, 160190.3, 150353.5, 144450.0)
+array_bicV2 = bicV2_vals/1000
+plot(range,array_bicV2,ylim = c(min(array_bicV2), max(array_bicV2)), col = "blue",ty="b",main = "Weekday Night BICs", ylab = "BIC (thousands)", xlab = "Number of States (n)")
+
+bicV3_vals = c(37137.572, 32661.442, 31093.341, 28313.250, 24858.879, 25171.437, 21312.329, 15764.539, 16013.909, 12537.423, 9107.608)
+array_bicV3 = bicV3_vals/1000
+plot(range,array_bicV3,ylim = c(min(array_bicV3), max(array_bicV3)), col = "red",ty="b",main = "Weekend Day BICs", ylab = "BIC (thousands)", xlab = "Number of States (n)")
+
+bicV4_vals = c(106127.82, 100741.32, 98137.13, 95384.38, 92016.07, 88654.77, 87345.01, 86616.32, 66846.57, 80883.88, 81017.85)
+array_bicV4 = bicV4_vals/1000
+plot(range,array_bicV4,ylim = c(min(array_bicV4), max(array_bicV4)), col = "green",ty="b",main = "Weekend Night BICs", ylab = "BIC (thousands)", xlab = "Number of States (n)")
+
 #Display results
-plot(range,bicV1,xlab = "Number of states (n)",frame = FALSE,pch = "o",col = "red",main = "BIC of 4 different HMMs with n states",ylab= "BIC", ty="b",lty=1)
-lines(range,bicV2,col ="blue",ty = "b",pch = "*",lty=2)
-lines(range,bicV3,col ="black",ty = "b",pch = ".",lty=3)
-lines(range,bicV4,col ="green",ty = "b",pch = ".",lty=4)
-legend(x = "topright",legend=c("Model 1","Model 2","Model 3","Model 4"),col = c("red","blue","black","green"),pch=c("o","*",".","x"),lty=c(1,2,3,4))
+plot(range,array_bicV1,ylim = c(min(array_bicV1, array_bicV2, array_bicV3, array_bicV4)/2, max(array_bicV1, array_bicV2, array_bicV3, array_bicV4)), xlab = "Number of states (n)",frame = FALSE,pch = "o",col = "purple",main = "BIC of 4 different HMMs with n states",ylab= "BIC", ty="b",lty=1)
+lines(range,array_bicV2,col ="blue",ty = "b",pch = "*",lty=2)
+lines(range,array_bicV3,col ="red",ty = "b",pch = ".",lty=3)
+lines(range,array_bicV4,col ="green",ty = "b",pch = "x",lty=4)
+legend(x = "topright",legend=c("Model 1","Model 2","Model 3","Model 4"),col = c("purple","blue","red","green"),pch=c("o","*",".","x"),lty=c(1,2,3,4))
 
