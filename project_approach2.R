@@ -28,37 +28,38 @@ weekend_night <- read.delim(
 # head(weekend_day)
 # head(weekend_night)
 
-#WEEKDAY DAYS
-set.seed(1)
+#Set model features for all 4 windows
+model_feature = c("TrueTime", "Global_active_power", "Global_reactive_power", "Voltage",
+                  "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")
 
-#Train data sets
-model_feature_wdd = c("TrueTime", "Global_active_power", "Global_reactive_power", "Voltage",
-                    "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")
-wdd_train = weekday_day[model_feature_wdd]
+#Number of states to test: 8-18
+range = c(8:18)
+bicV1 = c(8:18)
+bicV2 = c(8:18)
+bicV3 = c(8:18)
+bicV4 = c(8:18)
+
+#Set train & num
+wdd_train = weekday_day[model_feature]
 wdd_num = length(unique(weekday_day$Time))
 
-#Test for best number of states
-range = c(4:18)
-# bicV1 = c(4:18)
-bicV2 = c(4:18)
-# bicV3 = c(4:18)
-# aicV1 = c(1:18)
-#aicV2 = c(1:18)
-# aicV3 = c(1:18)
+wdn_train = weekday_night[model_feature]
+wdn_num = length(unique(weekday_night$Time))
 
-# Loop through 4-18 states
+wed_train = weekend_day[model_feature]
+wed_num = length(unique(weekend_day$Time))
+
+wen_train = weekend_night[model_feature]
+wen_num = length(unique(weekend_night$Time))
+
+#Test for best number of states
+# Loop through 8-18 states
 # find the optimal nstates for weekday daytime HMM
 for(n in range){
-
-  # model1 <- depmix(
-  #   response = wdd_train$Global_intensity ~ 1,
-  #   family = gaussian("identity"),
-  #   data= wdd_train,
-  #   nstates = n,
-  #   #ntimes = c(rep(wdd_num, 52))
-  # )
-
-  model2 <- depmix(
+  
+  #WEEKDAY DAYS - model 1
+  set.seed(1)
+  modelV1 <- depmix(
     response = wdd_train$Global_active_power ~ 1,
     family = gaussian("identity"),
     data = wdd_train,
@@ -66,50 +67,18 @@ for(n in range){
     #ntimes = c(rep(wdd_num, 52))
   )
 
-  # model3 <- depmix(
-  #   response = list(wdd_train$Global_intensity ~ 1,wdd_train$Global_active_power ~ 1),
-  #   family = list(gaussian("identity"),gaussian("identity")),
-  #   data = wdd_train,
-  #   nstates = n,
-  #   #ntimes = c(rep(wdd_num, 52))
-  # )
-
-  # message("Model 1 n = ",n,": ")
-  # fm1 <- fit(model1)
-  # message("\n")
-  message("Model 2 n = ",n,": ")
-  fm2 <- fit(model2)
-  message("\n")
-  # message("Model 3 n = ",n,": ")
-  # fm3 <- fit(model3)
-  # message("\n")
-
-  # bicV1[n] = BIC(fm1)
-  bicV2[n] = BIC(fm2)
-  # bicV3[n] = BIC(fm3)
-  # aicV1[n] = AIC(fm1)
-  #aicV2[n] = AIC(fm2)
-  # aicV3[n] = AIC(fm3)
-}
-
-#WEEKDAY NIGHTS
-set.seed(1)
-
-#Train data sets
-model_feature_wdn = c("TrueTime", "Global_active_power", "Global_reactive_power", "Voltage",
-                      "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")
-wdn_train = weekday_night[model_feature_wdn]
-wdn_num = length(unique(weekday_night$Time))
-
-#Test for best number of states
-range = c(11:18)
-bicV4 = c(11:18)
-
-# Loop through 4-18 states
-# find the optimal nstates for weekday nights HMM
-for(n in range){
+  message("Model 1: WDD n = ",n,": ")
+  fmV1 <- fit(modelV1)
+  fmV1
+  bicV1[n] = BIC(fmV1)
+  message(bicV1[n])
   
-  model4 <- depmix(
+  message("\n")
+  
+  #WEEKDAY NIGHTS - model 2
+  set.seed(1)
+  
+  modelV2 <- depmix(
     response = wdn_train$Global_active_power ~ 1,
     family = gaussian("identity"),
     data = wdn_train,
@@ -117,75 +86,56 @@ for(n in range){
     #ntimes = c(rep(wdn_num, 52))
   )
   
-  message("Model 4 n = ",n,": ")
-  fm4 <- fit(model4)
+  message("Model 2 WDN n = ",n,": ")
+  fmV2 <- fit(modelV2)
+  fmV2
+  bicV2[n] = BIC(fmV2)
+  message(bicV2[n])
+  
   message("\n")
   
-  bicV4[n] = BIC(fm4)
-}
-
-#WEEKEND DAYS
-set.seed(1)
-
-#Train data sets
-model_feature_wed = c("TrueTime", "Global_active_power", "Global_reactive_power", "Voltage",
-                      "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")
-wed_train = weekend_day[model_feature_wed]
-wed_num = length(unique(weekend_day$Time))
-
-#Test for best number of states
-range = c(12:18)
-bicV5 = c(12:18)
-
-# Loop through 4-18 states
-# find the optimal nstates for weekday nights HMM
-for(n in range){
+  #WEEKEND DAYS - model 3
+  set.seed(1)
   
-  model5 <- depmix(
+  modelV3 <- depmix(
     response = wed_train$Global_active_power ~ 1,
     family = gaussian("identity"),
     data = wed_train,
     nstates = n,
-    #ntimes = c(rep(wdn_num, 52))
+    #ntimes = c(rep(wed_num, 52))
   )
   
-  message("Model 5 n = ",n,": ")
-  fm5 <- fit(model5)
+  message("Model 3 WED n = ",n,": ")
+  fmV3 <- fit(modelV3)
+  fmV3
+  bicV3[n] = BIC(fmV3)
+  message(bicV3[n])
+  
   message("\n")
   
-  bicV5[n] = BIC(fm5)
-}
-
-#WEEKEND NIGHTS
-set.seed(1)
-
-#Train data sets
-model_feature_wen = c("TrueTime", "Global_active_power", "Global_reactive_power", "Voltage",
-                      "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")
-wen_train = weekend_night[model_feature_wen]
-wen_num = length(unique(weekend_night$Time))
-
-#Test for best number of states
-range = c(13:18)
-bicV6 = c(13:18)
-
-# Loop through 4-18 states
-# find the optimal nstates for weekday nights HMM
-for(n in range){
+  #WEEKEND NIGHTS - model 4
+  set.seed(1)
   
-  model6 <- depmix(
+  modelV4 <- depmix(
     response = wen_train$Global_active_power ~ 1,
     family = gaussian("identity"),
     data = wen_train,
     nstates = n,
-    #ntimes = c(rep(wdn_num, 52))
+    #ntimes = c(rep(wen_num, 52))
   )
   
-  message("Model 6 n = ",n,": ")
-  fm6 <- fit(model6)
-  fm6
-  message("\n")
+  message("Model 4 WEN n = ",n,": ")
+  fmV4 <- fit(modelV4)
+  fmV4
+  bicV4[n] = BIC(fmV4)
+  message(bicV4[n])
   
-  bicV6[n] = BIC(fm6)
+  message("\n")
 }
+
+# plot(range,bicV1,xlab = "Number of states (n)",frame = FALSE,pch = "o",col = "red",main = "BIC of 4 different HMMs with n states",ylab= "BIC", ty="b",lty=1)
+# lines(range,bicV2,col ="blue",ty = "b",pch = "*",lty=2)
+# lines(range,bicV3,col ="black",ty = "b",pch = ".",lty=3)
+# lines(range,bicV4,col ="green",ty = "b",pch = ".",lty=4)
+# legend(x = "topright",legend=c("Model 1","Model 2","Model 3","Model 4"),col = c("red","blue","black","green"),pch=c("o","*",".","x"),lty=c(1,2,3,4))
 
