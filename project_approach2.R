@@ -221,8 +221,9 @@ fmV4
 message("\n")
 
 # tutorial source: https://rdrr.io/cran/depmixS4/man/depmix.fit.html, example line 18~24
+set.seed(1)
 wdd_test <- read.delim(
-  "testdata_dayTime_2009.txt",
+  "weekday_test_day.txt",
   header = TRUE, sep = ",", dec = "."
 )
 wdd_test = wdd_test[model_feature]
@@ -238,8 +239,9 @@ modelT1 <- setpars(modelT1,getpars(fmV1))
 logLik(modelT1)
 
 
+set.seed(1)
 wdn_test <- read.delim(
-  "testdata_night_2009.txt",
+  "weekday_test_night.txt",
   header = TRUE, sep = ",", dec = "."
 )
 wdn_test = wdn_test[model_feature]
@@ -255,8 +257,9 @@ modelT2 <- setpars(modelT2,getpars(fmV2))
 logLik(modelT2)
 
 
+set.seed(1)
 wed_test <- read.delim(
-  "testdata_weekend_day_2009.txt",
+  "weekend_test.txt",
   header = TRUE, sep = ",", dec = "."
 )
 wed_test = wed_test[model_feature]
@@ -273,9 +276,9 @@ logLik(modelT3)
 
 
 
-
+set.seed(1)
 wen_test <- read.delim(
-  "testdata_weekend_night_2009.txt",
+  "weekend_test_night.txt",
   header = TRUE, sep = ",", dec = "."
 )
 wen_test = weekend_night[model_feature]
@@ -290,4 +293,8 @@ modelT4 <- depmix(
 modelT4 <- setpars(modelT4,getpars(fmV4))
 logLik(modelT4)
 
+logLik(modelT1)
+logLik(modelT2)
+logLik(modelT3)
+logLik(modelT4)
 
