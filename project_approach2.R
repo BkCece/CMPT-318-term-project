@@ -245,9 +245,9 @@ wdn_test <- read.delim(
 wdn_test = wdn_test[model_feature]
 wdn_num = length(unique(wdn_test$Time))
 modelT2 <- depmix(
-  response = wdn_num$Global_active_power ~ 1,
+  response = wdn_test$Global_active_power ~ 1,
   family = gaussian("identity"),
-  data = wdn_num,
+  data = wdn_test,
   nstates = 18,
   #ntimes = c(rep(wdd_num, 52))
 )
@@ -284,7 +284,7 @@ modelT4 <- depmix(
   response = wen_test$Global_active_power ~ 1,
   family = gaussian("identity"),
   data = wen_test,
-  nstates = 18,
+  nstates = 16,
   #ntimes = c(rep(wdd_num, 52))
 )
 modelT4 <- setpars(modelT4,getpars(fmV4))
