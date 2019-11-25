@@ -3,6 +3,7 @@ library("lubridate")
 library("depmixS4")
 library(ggplot2)
 library(here)
+library(zoo)
 
 mydata <- read.delim(
   "TrainData.txt",
@@ -211,6 +212,8 @@ anonfeature = mydata[c("Date", "Time","TrueTime", "Voltage","Global_active_power
 start = as.POSIXct("00:00:00", format="%H:%M:%S")
 end = as.POSIXct("01:00:00", format="%H:%M:%S")
 count = 0
+maxcount = 0
+mincount = 0
 for(i in 0:23){
   # Slice the data in 1 hour time window
   dataSlice = mydata[ mydata$T > start & mydata$T < end,]
@@ -230,18 +233,25 @@ for(i in 0:23){
     maxV[1:len] = maxVol
     #If there is out of range point plot it
     if(len > 0){
+      for(i in outOfRangeV$Voltage){
+        if(i < minVol){
+          mincount = mincount +1
+        } else{
+          maxcount = maxcount + 1
+        }
+      }
       
       if(count == 0){
         plot(outOfRangeV$Time,outOfRangeV$Vol,main = "Out of Range Voltage with 1 hour time slide",type = "p", ylim=range(220,260))
         lines(outOfRangeV$Time,minV, col ="blue",ty = "b",pch = "*")
         lines(outOfRangeV$Time,maxV, col ="red",ty = "b",pch = "*")
-        count = count + 1
+        count = count + len
       }
       else{
         lines(outOfRangeV$Time,outOfRangeV$Vol,type = "p")
         lines(outOfRangeV$Time,minV, col ="blue",ty = "b",pch = "*")
         lines(outOfRangeV$Time,maxV, col ="red",ty = "b",pch = "*")
-
+        count = count + len
       }
       legend(x = "topright",legend=c("Min","Max","Anomaly"),col = c("blue","red","black"),pch = c(8,8,8))
     }
@@ -250,6 +260,64 @@ for(i in 0:23){
   start = start + hours(1)
   end = end + hours(1)
 }
+
+
+#Part 2: Moving average
+start = as.POSIXct("09:00:00", format="%H:%M:%S")
+end = as.POSIXct("10:00:00", format="%H:%M:%S")
+anonmaly = matrix(list(), nrow=11, ncol=1)
+anon = 0
+iter = 0
+for(num_obs in 10:20){
+  # Slice the data in 1 hour time window
+  count = count + 1
+  dataSlice = mydata[ mydata$T > start & mydata$T < end,]
+  testSlice = testdata[testdata$T > start & testdata$T < end,]
+  dataroll <- rollapply(data = dataSlice$Voltage, width = num_obs, mean)
+  testroll <- rollapply(data = testSlice$Voltage, width = num_obs, mean)
+  m = mean(dataroll)
+  error <- qnorm(0.975)*sd(dataroll)/sqrt(10)
+  upperbound = m + error
+  lowerbound = m - error
+  anon = 0
+  for(i in testroll){
+    if(i < lowerbound){
+      anon = anon + 1
+    }
+    else if(i > upperbound){
+      anon = anon + 1
+    }
+  }
+  point = c(1:anon)
+  count = 0
+  for(i in testroll){
+    if(i < lowerbound){
+      point[count] = i
+      count = count +1
+    }
+    else if(i > upperbound){
+      point[count] = i
+      count = count +1
+      
+    } 
+  }
+  iter = iter + 1
+  message(iter)
+  anonmaly[[iter,1]] = point
+}
+for(i in 1:11){
+  na.omit(anonmaly[[i,1]])
+}
+
+
+
+plot(1:length(anonmaly[[1,1]]),anonmaly[[1,1]],
+     xlab = "Number of Anonmalies",
+     ylab = "Average Voltage",
+     ylim = range(230, 250),
+     main = "Point Anomaly of Moving Average with 10 observations")
+
+
 #Plot
 attach(mtcars)
 plot(anonTest$Time,anonTest$Voltage)
