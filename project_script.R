@@ -221,16 +221,16 @@ for(i in 0:23){
   
   #Check for out of range in the time window
   if(length(testSlice$Voltage) > 0){
-    minVol = min(dataSlice$Voltage)
-    maxVol = max(dataSlice$Voltage)
-    #minAct = min(dataSlice$Global_active_power)
-    #maxAct = max(dataSlice$Global_active_power)
-    outOfRangeV = testSlice[testSlice$Voltage<minVol | testSlice$Voltage>maxVol,]
-    len = length(outOfRangeV$Vol)
+    #minVol = min(dataSlice$Voltage)
+    #maxVol = max(dataSlice$Voltage)
+    minAct = min(dataSlice$Global_active_power)
+    maxAct = max(dataSlice$Global_active_power)
+    outOfRangeV = testSlice[testSlice$Global_active_power<minAct | testSlice$Global_active_power>maxAct,]
+    len = length(outOfRangeV$Global_active_power)
     minV = 1:len
     maxV = 1:len
-    minV[1:len] = minVol
-    maxV[1:len] = maxVol
+    minV[1:len] = minAct
+    maxV[1:len] = maxAct
     #If there is out of range point plot it
     if(len > 0){
       for(i in outOfRangeV$Voltage){
@@ -242,13 +242,13 @@ for(i in 0:23){
       }
       
       if(count == 0){
-        plot(outOfRangeV$Time,outOfRangeV$Vol,main = "Out of Range Voltage with 1 hour time slide",type = "p", ylim=range(220,260))
+        plot(outOfRangeV$Time,outOfRangeV$Global_active_power,main = "Out of Range Active Power with 1 hour time slide",type = "p", ylim=range(-0.5,13))
         lines(outOfRangeV$Time,minV, col ="blue",ty = "b",pch = "*")
         lines(outOfRangeV$Time,maxV, col ="red",ty = "b",pch = "*")
         count = count + len
       }
       else{
-        lines(outOfRangeV$Time,outOfRangeV$Vol,type = "p")
+        lines(outOfRangeV$Time,outOfRangeV$Global_active_power,type = "p")
         lines(outOfRangeV$Time,minV, col ="blue",ty = "b",pch = "*")
         lines(outOfRangeV$Time,maxV, col ="red",ty = "b",pch = "*")
         count = count + len
