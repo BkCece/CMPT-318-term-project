@@ -235,7 +235,7 @@ modelT1 <- depmix(
   #ntimes = c(rep(wdd_num, 52))
 )
 modelT1 <- setpars(modelT1,getpars(fmV1))
-T1result <- fit(modelT1)
+logLik(modelT1)
 
 
 wdn_test <- read.delim(
@@ -252,7 +252,7 @@ modelT2 <- depmix(
   #ntimes = c(rep(wdd_num, 52))
 )
 modelT2 <- setpars(modelT2,getpars(fmV2))
-T2result <- fit(modelT2)
+logLik(modelT2)
 
 
 wed_test <- read.delim(
@@ -269,7 +269,7 @@ modelT3 <- depmix(
   #ntimes = c(rep(wdd_num, 52))
 )
 modelT3 <- setpars(modelT3,getpars(fmV3))
-T3result <- fit(modelT3)
+logLik(modelT3)
 
 
 
@@ -288,6 +288,6 @@ modelT4 <- depmix(
   #ntimes = c(rep(wdd_num, 52))
 )
 modelT4 <- setpars(modelT4,getpars(fmV4))
-T4result <- fit(modelT4)
+logLik(modelT4)
 
 
