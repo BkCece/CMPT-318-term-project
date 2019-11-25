@@ -15,13 +15,16 @@ testdata <- read.delim(
   header = TRUE, sep = ",", dec = "."
 )
 
-mydata[mydata<0] <- NA
-#mydata <- mydata[mydata$Global_active_power >= 0, mydata$Global_reactive_power >= 0, mydata$Voltage >= 0]
-#testdata <- testdata[testdata$Global_active_power >= 0, testdata$Global_reactive_power >= 0, testdata$Voltage >= 0]
-testdata[testdata<0] <-NA
 
+#Filtering N/A entries
+mydata[mydata<0] <- NA
+testdata[testdata<0] <-NA
 mydata = na.omit(mydata)
 testdata = na.omit(testdata)
+
+#mydata <- mydata[mydata$Global_active_power >= 0, mydata$Global_reactive_power >= 0, mydata$Voltage >= 0]
+#testdata <- testdata[testdata$Global_active_power >= 0, testdata$Global_reactive_power >= 0, testdata$Voltage >= 0]
+
 #Display data
 
 head(mydata)
@@ -208,12 +211,11 @@ write.table(testdata_weekend_day_2010, here("testdata_weekend_day_2009.txt"), se
 #Part I: Out of range: Choosing "Global active power" and "Voltage" to make comparision
 # Find min and max Voltage per 1 hour window and compare to Voltage of testdata
 
-anonfeature = mydata[c("Date", "Time","TrueTime", "Voltage","Global_active_power")]
 start = as.POSIXct("00:00:00", format="%H:%M:%S")
 end = as.POSIXct("01:00:00", format="%H:%M:%S")
-count = 0
-maxcount = 0
-mincount = 0
+count = 0     # Total number of anonmaly point
+maxcount = 0  # Counter for anonmaly points > max
+mincount = 0  # Counter for anonmaly points < min
 for(i in 0:23){
   # Slice the data in 1 hour time window
   dataSlice = mydata[ mydata$T > start & mydata$T < end,]
@@ -273,13 +275,19 @@ for(num_obs in 10:20){
   count = count + 1
   dataSlice = mydata[ mydata$T > start & mydata$T < end,]
   testSlice = testdata[testdata$T > start & testdata$T < end,]
-  dataroll <- rollapply(data = dataSlice$Voltage, width = num_obs, mean)
-  testroll <- rollapply(data = testSlice$Voltage, width = num_obs, mean)
+  
+  # Take random sampling with num_obs observations 
+  dataroll <- rollapply(data = dataSlice$Global_active_power, width = num_obs, mean)
+  testroll <- rollapply(data = testSlice$Global_active_power, width = num_obs, mean)
+  
+  # Get the mean of dataroll
   m = mean(dataroll)
+  # Calculate 95% Confidence interval
   error <- qnorm(0.975)*sd(dataroll)/sqrt(10)
   upperbound = m + error
   lowerbound = m - error
-  anon = 0
+  
+  anon = 0 # Number of anomaly points of the sample
   for(i in testroll){
     if(i < lowerbound){
       anon = anon + 1
@@ -288,7 +296,7 @@ for(num_obs in 10:20){
       anon = anon + 1
     }
   }
-  point = c(1:anon)
+  point = c(1:anon) # List of anomaly points
   count = 0
   for(i in testroll){
     if(i < lowerbound){
@@ -301,26 +309,22 @@ for(num_obs in 10:20){
       
     } 
   }
-  iter = iter + 1
-  message(iter)
+  iter = iter + 1 # Slide the window by 1 observation
   anonmaly[[iter,1]] = point
 }
-for(i in 1:11){
-  na.omit(anonmaly[[i,1]])
-}
 
 
 
-plot(1:length(anonmaly[[1,1]]),anonmaly[[1,1]],
+# Plot the anomaly point
+# anonmaly[[i,1]] = Set of anomaly points with a window of (i+9) observations
+# Please change i accordingly to the graph you want to plot
+plot(1:length(anonmaly[[11,1]]),anonmaly[[11,1]],
      xlab = "Number of Anonmalies",
-     ylab = "Average Voltage",
-     ylim = range(230, 250),
-     main = "Point Anomaly of Moving Average with 10 observations")
+     ylab = "Average Global Active Power",
+     ylim = range(0,10),
+     main = "Point Anomaly of Moving Average with 20 observations")
 
 
-#Plot
-attach(mtcars)
-plot(anonTest$Time,anonTest$Voltage)
 #mean_aggdata <- aggregate(weekday_dayTime_2007, by = list(weekday_dayTime_2007$date, weekday_dayTime_2007$Voltage), FUN = mean, na.rm = TRUE)
 
 # Power_perHour <- c()
